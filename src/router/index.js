@@ -12,13 +12,41 @@ const router = new Router({
 })
 
 router.beforeEach((to, from , next) => {
-  const auth = router.app.$options.store.state.auth
+  const app = router.app
+  const store = app.$options.store
+  const auth = store.state.auth
 
-  if (auth && to.path.indexOf('/auth/') !== -1) {
+  const articleId = to.params.articleId
+
+  app.$message.hide()
+
+  if (
+      (auth && to.path.indexOf('/auth/') !== -1)
+      || (!auth && to.meta.auth)
+      || ( articleId && !store.getters.getArticleById(articleId))
+    ) {
     next('/')
+    } else {
+      next()
+    }
+  })
+
+router.afterEach((to, from ) => {
+  const app = router.app
+  const store = app.$options.store
+  const showMsg = to.params.showMsg
+
+  if (showMsg) {
+  // showMsg 是一个字符时，使用它作为消息内容
+  if (typeof showMsg === 'string') {
+    // 显示消息提示
+    app.$message.show(showMsg)
   } else {
-    next()
+    // 显示操作成功
+    app.$message.show('操作成功')
   }
+}
+
 })
 
 export default router
