@@ -67,3 +67,42 @@ export const post = ({ commit, state }, { article, articleId }) => {
     router.push({ name: 'Home', params: { showMsg: true }})
   }
 }
+
+export const like = ({ commit , state }, { articleId, isAdd }) => {
+
+  let articles = state.articles
+  let likeUsers = []
+  const uid = 1
+  if (!Array.isArray(articles)) articles = []
+
+  for (let article of articles) {
+
+    if (parseInt(article.articleId) === parseInt(articleId)) {
+
+      likeUsers = Array.isArray(article.likeUsers) ? article.likeUsers : likeUsers
+
+      if (isAdd) {
+        const isAdded = likeUsers.some(likeUser => parseInt(likeUser.uid) === uid)
+
+        if (!isAdded) {
+          likeUsers.push({ uid })
+        }
+      } else {
+        for (let likeUser of likeUsers) {
+          if (parseInt(likeUser.uid) === uid) {
+            likeUsers.splice(likeUsers.indexOf(likeUser), 1)
+            break
+          }
+        }
+      }
+
+      article.likeUsers = likeUsers
+      break
+    }
+  }
+
+  commit('UPDATE_ARTICLES', articles)
+
+  return likeUsers
+
+}
