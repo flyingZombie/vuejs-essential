@@ -34,8 +34,9 @@
         <div class="voted-users">
           <div class="user-lists">
             <span v-for="likeUser in likeUsers" :key = "likeUser.id">
-              <img :src="user && user.avatar" class="img-thumbnail avatar avatar-middle"
-              :class="{ 'animated swing' : likeUser.uid === 1}">
+              <router-link :to="`/${likeUser.uname}`" :src="likeUser.uavatar" tag="img" class="img-thumbnail avatar avatar-middle" :class="{ 'animated swing' : likeUser.uid === 1}">
+              </router-link>
+
             </span>
           </div>
           <div v-if="!likeUsers.length" class="vote-hint">成为第一个点赞的人吧！😀</div>
@@ -155,12 +156,20 @@ export default {
       commentId: undefined,
     }
   },
-
   computed: {
     ...mapState([
        'auth',
        'user'
       ])
+  },
+  recompute(key) {
+    const articleId = this.$route.params.articleId
+    const article = this.$store.getters.getArticleById(articleId)
+    let arr
+    if (article) {
+      arr = article[key]
+    }
+    return arr || []
   },
 
   created() {
@@ -218,6 +227,7 @@ export default {
   methods: {
     renderComments(comments) {
       if (Array.isArray(comments)) {
+        comments = this.recompute('comments')
         const newComments = comments.map(comment => ({ ...comment}))
         const user = this.user || {}
         for (let comment of newComments) {
@@ -260,12 +270,14 @@ export default {
         if (active) {
           this.likeClass = ''
           this.$store.dispatch('like', { articleId }).then((likeUsers) => {
-            this.likeUsers = likeUsers
+            //this.likeUsers = likeUsers
+            this.likeUsers = this.recompute('likeUsers')
           })
         } else {
           this.likeClass = 'active animated rubberBand'
           this.$store.dispatch('like', { articleId, isAdd: true}).then((likeUsers) => {
-            this.likeUsers = likeUsers
+            //this.likeUsers = likeUsers
+            this.likeUsers = this.recompute('likeUsers')
           })
         }
       }

@@ -12,8 +12,8 @@
 
         <ul class="list-group">
           <!-- 使用 v-for 指令渲染文章列表 -->
-          <li v-for="article in articles" class="list-group-item">
-            <img v-if="user" :src="user.avatar" class="avatar avatar-small">
+          <li v-for="article in articles" :key="article.articleId" class="list-group-item">
+            <img :src="article.uavatar" class="avatar avatar-small">
             <router-link :to="`/articles/${article.articleId}/content`" class="title">
               {{ article.title }}
             </router-link>
@@ -33,13 +33,22 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'List',
+  data() {
+    return {
+      articles: []
+    }
+  },
   computed: {
     // 将指定的状态混入计算属性
     ...mapState([
       'auth',
-      'user',
-      'articles'
+      'user'
     ])
+  },
+  beforeRouteEnter(to, from, next) {
+    next( vm => {
+      vm.articles = vm.$store.getters.getArticlesByUid(null, to.params.user)
+    })
   }
 }
 </script>

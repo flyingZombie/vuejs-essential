@@ -39,19 +39,51 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'Column',
+  data() {
+    return {
+      userName: '',
+      userAvatar: '',
+      articles: []
+    }
+  },
   computed: {
     ...mapState([
-      'user',
-      'articles'
+      'user'
     ]),
-    userName() {
-      return this.user && this.user.name
-    },
-    userAvatar() {
-      return this.user && this.user.avatar
-    },
     articleNum() {
-      return this.articles ? this.articles.length : 0
+      return this.articles.length
+    }
+  },
+  beforeRouteEnter(to, from, next){
+    next(vm => {
+      vm.setDataByParams(to.params)
+    })
+  },
+  watch: {
+    '$route'(to){
+      this.setDataByParams(to.params)
+    }
+  },
+  methods: {
+    setDataByParams(params) {
+      const user = params.user
+      const articleId = params.articleId
+      const article = this.$store.getters.getArticleById(articleId)
+      if (article) {
+        this.userName = article.uname
+        this.userAvatar = article.uavatar
+        this.articles = this.$store.getters.getArticlesByUid(null, article.uname)
+      } else if (user) {
+        const articles = this.$store.getters.getArticlesByUid(null, user)
+        if (articles.length) {
+          this.userName = articles[0].uname
+          this.userAvatar = articles[0].uavatar
+        } else if (this.user) {
+          this.userName = this.user.name
+          this.userAvatar = this.user.avatar
+        }
+        this.articles = articles
+      }
     }
   }
 }
