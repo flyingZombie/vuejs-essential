@@ -72,7 +72,7 @@ export default {
         { filter: 'noreply', name: '零回复', title: '无人问津的话题'}
       ],
       total: 0,
-      pageSize: 10,
+      pageSize: 20,
     }
   },
   beforeRouteEnter(to, from ,next) {
