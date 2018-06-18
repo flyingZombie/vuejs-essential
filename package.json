@@ -12,6 +12,7 @@
   "dependencies": {
     "ajv": "^6.5.1",
     "animate.css": "^3.6.1",
+    "axios": "^0.18.0",
     "bootstrap-sass": "^3.3.7",
     "font-awesome": "^4.7.0",
     "highlight.js": "^9.12.0",
