@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Message from './Message'
 import Modal from './Modal'
+import Pagination from './Pagination'
 
 const components = {
   Message,
-  Modal
+  Modal,
+  Pagination
 }
 
 Vue.component('Message', Message)

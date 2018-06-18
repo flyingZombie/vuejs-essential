@@ -38,6 +38,9 @@
             </li>
           </ul>
         </div>
+        <div class="panel-footer text-right remove-padding-horizontal pager-footer">
+          <Pagination :currentPage = "currentPage" :total="total" :pageSize="pageSize" :onPageChange="changePage" />
+        </div>
       </div>
     </div>
   </div>
@@ -63,6 +66,8 @@ export default {
         { filter: 'recent', name: '最近', title: '发布时间排序'},
         { filter: 'noreply', name: '零回复', title: '无人问津的话题'}
       ],
+      total: 0,
+      pageSize: 10,
     }
   },
   beforeRouteEnter(to, from ,next) {
@@ -92,7 +97,10 @@ export default {
     ...mapState([
       'auth',
       'user'
-    ])
+    ]),
+    currentPage() {
+      return parseInt(this.$route.query.page) || 1
+    }
   },
   watch: {
     auth(value) {
@@ -111,8 +119,15 @@ export default {
       this.msgShow = true
     },
     setDataByFilter(filter = 'default'){
+      const pageSize = this.pageSize
+      const currentPage = this.currentPage
+      const allArticles = this.$store.getters.getArticlesByFilter(filter)
       this.filter = filter
-      this.articles = this.$store.getters.getArticlesByFilter(filter)
+      this.total = allArticles.length
+      this.articles = allArticles.slice(pageSize * (currentPage -1), pageSize * currentPage)
+    },
+    changePage(page) {
+      this.$router.push({query: { ...this.$route.query, page }})
     }
   }
 }

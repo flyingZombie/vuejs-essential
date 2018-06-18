@@ -27,7 +27,7 @@ const AddMockData = (() => {
     userArticles = []
   }
   if (isAddMockData) {
-    store.commit('UPDATE_ARTICLES', [...userArticles, ...mockArticles(10)])
+    store.commit('UPDATE_ARTICLES', [...userArticles, ...mockArticles(60)])
   } else {
     store.commit('UPDATE_ARTICLES', userArticles)
   }
