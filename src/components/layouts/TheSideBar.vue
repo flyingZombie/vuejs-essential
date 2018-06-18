@@ -1,5 +1,6 @@
 <template>
 <div class="col-md-3 side-bar" >
+
   <div class="panel panel-default corner-radius sidebar-resources">
     <div class="panel-heading text-center">
       <h3 class="panel-title">实战课程</h3>
@@ -14,6 +15,7 @@
       </Slider>
     </div>
   </div>
+
   <div class="panel panel-default corner-radius panel-active-users">
     <div class="panel-heading text-center">
       <h3 class="panel-title">
@@ -27,6 +29,25 @@
           {{ user.name }}
         </router-link>
       </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default corner-radius panel-hot-topics">
+    <div class="panel-heading text-center">
+      <h3 class="panel-title">
+        七天内最热
+      </h3>
+    </div>
+    <div class="panel-body">
+      <ul class="list">
+        <li v-for="(article, index) in hotArticles" :key='index'>
+          <router-link :to="`/articles/${article.articleId}/content`">
+            <span v-if="index === 0">🏆</span>
+            <span v-else>{{ index + 1}}.</span>
+            {{ article.title}}
+          </router-link>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
@@ -54,12 +75,16 @@ export default {
           link: 'https://laravel-china.org/topics/7657'
         }
       ],
-      activeUsers: []
+      activeUsers: [],
+      hotArticles:[]
     }
   },
   created() {
     this.$axios.get('/users/active').then((response) => {
       this.activeUsers = response.data
+    })
+    this.$axios.post('/articles/hot', { num: 10 }).then((response) => {
+      this.hotArticles = response.data
     })
   }
 }
