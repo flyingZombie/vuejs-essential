@@ -4,6 +4,15 @@
       <h3 class="panel-title">
         <i class="fa fa-search"></i>
         关于“<span class="highlight">{{ keyword }}</span>” 的搜索结果，共{{ results.length }} 条
+        <div class="pull-right" style="margin-top:-10px">
+          <button v-for="item in filters" :key="item.filter" :disabled="item.filter === filter"
+          class="btn btn-default btn-sm"
+          href="javascript:;"
+          @click="getArticlesByKeyword(keyword, item.filter)">
+          <i :class="`fa fa-${item.icon}`"></i>
+          {{ item.title }}
+          </button>
+        </div>
       </h3>
     </div>
     <div class="panel-body">
@@ -45,7 +54,20 @@ export default {
   data() {
     return {
       keyword: '',
-      results: []
+      results: [],
+      filter: 'default',
+      filters: [
+        {
+          filter: 'default',
+          title: '相关性排序',
+          icon: 'random'
+        },
+        {
+          filter: 'vote',
+          title: '点赞数排序',
+          icon: 'thumbs-up'
+        }
+      ]
     }
   },
   beforeRouteEnter(to, from, next) {
@@ -62,11 +84,12 @@ export default {
     next()
   },
   methods: {
-    getArticlesByKeyword(keyword) {
+    getArticlesByKeyword(keyword, filter) {
       if (keyword) {
         this.keyword = keyword
+        if (filter) this.filter = filter
         this.$store.commit('UPDATE_SEARCH_VALUE', keyword)
-        this.results = this.$store.getters.getArticlesByKeyword(keyword)
+        this.results = this.$store.getters.getArticlesByKeyword(keyword, filter)
       }
     }
   }
