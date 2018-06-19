@@ -62,6 +62,11 @@ export default [
     component: () => import('@/views/articles/Create'),
     meta: { auth: true }
   },
+  {
+    path: '/search',
+    name: 'Search',
+    component: () => import('@/views/Search')
+  },
 
   {
     path: '/:user',
@@ -78,6 +83,11 @@ export default [
         component: () => import('@/views/articles/Content.vue')
       }
     ]
-  }
+  },
+
+
+
+
+
 
 ]

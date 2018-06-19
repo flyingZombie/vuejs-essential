@@ -20,11 +20,12 @@
 
       <div id="top-navbar-collapse" :class="['collapse', 'navbar-collapse', { in: showCollapsedNav }]">
         <ul class="nav navbar-nav">
-          <li v-for="(item, index) in navList" :class="{ active: index === activeNavIndex }">
+          <li v-for="(item, index) in navList" :key="index" :class="{ active: index === activeNavIndex }">
             <a href="#" @click="changeNavIndex(index)">{{ item }}</a>
           </li>
         </ul>
       <div class="navbar-right">
+      <search-input/>
        <TheEntry/>
       </div>
       </div>
@@ -36,11 +37,13 @@
 
 <script>
 import TheEntry from '@/components/layouts/TheEntry'
+import SearchInput from '@/components/layouts/SearchInput'
 
 export default {
   name: 'TheHeader',
   components: {
-    TheEntry
+    TheEntry,
+    SearchInput
     },
   data() {
     return {
